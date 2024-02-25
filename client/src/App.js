@@ -1,11 +1,10 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Layout, Menu, theme, Input, Select, Table } from 'antd';
-import moment from 'moment';
+import React, { useState } from 'react';
+import { Layout, Menu, Select } from 'antd';
+import Transactions from './components/Transactions';
 
 const { Header, Content, Footer } = Layout;
-const { Search } = Input;
+
 
 const navItems = [
   {
@@ -32,42 +31,7 @@ const options = [
   "November",
   "December"
 ];
-const columns = [
-  {
-    title: "#",
-    dataIndex: "id",
-  },
-  {
-    title: "Title",
-    dataIndex: "title",
-    width: "20%",
-  },
-  {
-    title: "Price",
-    dataIndex: "price",
-    render: (price) => parseFloat(price).toFixed(2),
-    sorter: true
-  },
-  {
-    title: "Description",
-    dataIndex: "description",
-    width: "50%"
-  },
-  {
-    title: "Category",
-    dataIndex: "category"
-  },
-  {
-    title: "Sold",
-    dataIndex: "sold",
-    render: (sold) => sold ? "Yes" : "No"
-  },
-  {
-    title: "Date",
-    dataIndex: "dateOfSale",
-    render: (date) => moment(date).format("DD MMM YYYY")
-  }
-];
+
 // const transactions = [
 //   {
 //     "_id": "65da9a6743525859fc0aabfc",
@@ -194,53 +158,6 @@ const columns = [
 
 const App = () => {
   let [month, setMonth] = useState(3);
-  const [data, setData] = useState();
-  const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useState({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      position: ['bottomCenter']
-    }
-  });
-  const fetchData = async () => {
-    setLoading(true);
-    const {data} = await axios.get(`http://localhost:8080/transactions`, {
-      params: {
-        month,
-        page: tableParams.pagination.current,
-        limit: tableParams.pagination.pageSize
-      }
-    });
-    
-    setData(data.transactions);
-    setLoading(false);
-    setTableParams({
-      ...tableParams,
-      pagination: {
-        ...tableParams.pagination,
-        total: data.totalCount,
-      },
-    });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [JSON.stringify(tableParams),month]);
-
-  const handleTableChange = (pagination, filters, sorter) => {
-    setTableParams({
-      pagination,
-      filters,
-      ...sorter
-    });
-
-    // `dataSource` is useless since `pageSize` changed
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]);
-    }
-  };
-
 
   const handleMonthChange = (value) => {
     setMonth(parseInt(value));
@@ -251,7 +168,7 @@ const App = () => {
       <Header
         style={{
           display: "flex",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <h1 style={{ color: "white" }}>Dashboard</h1>
@@ -262,7 +179,6 @@ const App = () => {
           items={navItems}
           style={{
             flex: 1,
-            minWidth: 0,
             padding: "0 60px"
           }}
         />
@@ -287,6 +203,10 @@ const App = () => {
           backgroundColor: "white"
         }}
       >
+
+        <Transactions month={month} monthText={options[month]} />
+
+{/* 
         <Search
           placeholder="input search text"
           allowClear
@@ -308,7 +228,9 @@ const App = () => {
           bordered
           title={() => <strong>Transactions for {options[month]}</strong>}
           scroll={{ y:540 }}
-        />
+        /> */}
+
+
       </Content>
       <Footer
         style={{
