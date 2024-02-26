@@ -7,6 +7,8 @@ import { Chart as ChartJS } from "chart.js/auto";
 export default function Stats({ month, monthText }) {
     let [data, setData] = useState();
     const [loading, setLoading] = useState(false);
+    
+    
     const getData = async () => {
         try {
             setLoading(true);
@@ -35,6 +37,7 @@ export default function Stats({ month, monthText }) {
                 style={{
                     display: 'flex',
                     flexWrap: 'wrap',
+                    justifyContent: 'center',
                     gap: '48px',
                 }}>
 
@@ -90,9 +93,37 @@ function BarChart({ data }) {
         responsive: true,
         plugins: {
             legend: {
-                position: 'top',
+                position: 'top'
             }
-        }
+        },
+        scales: {
+            x: {
+                stacked: true,
+                title: {
+                    display: true,
+                    text: 'Price Range'
+                }
+            },
+            y: {
+                stacked: true,
+                title: {
+                    display: true,
+                    text: 'Product Count'
+                },
+                ticks: {
+                    stepSize: 4
+                }
+            }
+        },
+        aspectRatio: 1.6,
+        plugins: {
+            title: {
+                display: true,
+                text: 'No of products per price range'
+            },
+        },
+
+
     };
 
     let labels = Object.keys(data);
@@ -102,8 +133,11 @@ function BarChart({ data }) {
         labels,
         datasets: [
             {
-                label: 'Product Price Range Distribution',
+                label: 'No of products per price range',
                 data: values,
+                backgroundColor: [
+                    'rgba(0, 105, 100, 0.7)'
+                ]
             }
         ]
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
-import { Table, Input, message } from 'antd';
+import { Table, Input, message, Image } from 'antd';
 import axios from 'axios';
 
 const { Search } = Input;
@@ -8,36 +8,45 @@ const columns = [
     {
         title: "#",
         dataIndex: "id",
+        width: "40px",
     },
     {
         title: "Title",
         dataIndex: "title",
-        width: "20%",
+        width: "200px",
     },
     {
         title: "Price",
         dataIndex: "price",
         render: (price) => parseFloat(price).toFixed(2),
-        sorter: true
+        width: "80px"
     },
     {
         title: "Description",
         dataIndex: "description",
-        width: "50%"
     },
     {
         title: "Category",
-        dataIndex: "category"
+        dataIndex: "category",
+        width: "120px"
     },
     {
         title: "Sold",
         dataIndex: "sold",
-        render: (sold) => sold ? "Yes" : "No"
+        render: (sold) => sold ? "Yes" : "No",
+        width: "50px"
     },
     {
         title: "Date",
         dataIndex: "dateOfSale",
-        render: (date) => moment(date).format("DD MMM YYYY")
+        render: (date) => moment(date).format("DD MMM YYYY"),
+        width: "100px"
+    },
+    {
+        title: "Image",
+        dataIndex: "image",
+        render: (url) => <Image src={url} alt="Product Image" />,
+        width: "80px"
     }
 ];
 
@@ -47,20 +56,20 @@ function Transactions({ month, monthText }) {
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
-            pageSize: 10,
-            position: ['bottomCenter']
+            pageSize: 10
         }
     });
 
 
-    const fetchData = async () => {
+    const getData = async () => {
         try {
             setLoading(true);
             const { data } = await axios.get(`https://roxiler-pvpf.onrender.com/transactions`, {
                 params: {
                     month,
                     page: tableParams.pagination.current,
-                    limit: tableParams.pagination.pageSize
+                    limit: tableParams.pagination.pageSize,
+                    search: tableParams.search
                 }
             });
 
@@ -71,7 +80,7 @@ function Transactions({ month, monthText }) {
                 pagination: {
                     ...tableParams.pagination,
                     total: data.totalCount,
-                },
+                }
             });
             message.success('Data loaded successfully');
         } catch (error) {
@@ -82,27 +91,33 @@ function Transactions({ month, monthText }) {
 
     const handleTableChange = (pagination, filters, sorter) => {
         setTableParams({
-            pagination,
-            filters,
-            ...sorter
+            ...tableParams,
+            pagination
         });
-        
+
         // `dataSource` is useless since `pageSize` changed
         if (pagination.pageSize !== tableParams.pagination?.pageSize) {
             setData([]);
         }
     };
-    
+
+    const handleSearch = (value) => {
+        setTableParams({
+            ...tableParams,
+            search: value
+        });
+    }
+
     useEffect(() => {
-        fetchData();
+        getData();
     }, [JSON.stringify(tableParams), month]);
 
     return (
         <>
             <Search
-                placeholder="input search text"
+                placeholder="Search"
                 allowClear
-                onSearch={() => { }}
+                onSearch={handleSearch}
                 style={{
                     width: 300,
                     padding: "12px 0px"
