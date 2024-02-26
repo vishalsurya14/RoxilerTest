@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
-import { Table, Input } from 'antd';
+import { Table, Input, message } from 'antd';
 import axios from 'axios';
 
 const { Search } = Input;
@@ -54,29 +54,31 @@ function Transactions({ month, monthText }) {
 
 
     const fetchData = async () => {
-        setLoading(true);
-        const { data } = await axios.get(`http://localhost:8080/transactions`, {
-            params: {
-                month,
-                page: tableParams.pagination.current,
-                limit: tableParams.pagination.pageSize
-            }
-        });
+        try {
+            setLoading(true);
+            const { data } = await axios.get(`http://localhost:8080/transactions`, {
+                params: {
+                    month,
+                    page: tableParams.pagination.current,
+                    limit: tableParams.pagination.pageSize
+                }
+            });
 
-        setData(data.transactions);
-        setLoading(false);
-        setTableParams({
-            ...tableParams,
-            pagination: {
-                ...tableParams.pagination,
-                total: data.totalCount,
-            },
-        });
+            setData(data.transactions);
+            setLoading(false);
+            setTableParams({
+                ...tableParams,
+                pagination: {
+                    ...tableParams.pagination,
+                    total: data.totalCount,
+                },
+            });
+            message.success('Data loaded successfully');
+        } catch (error) {
+            console.log(error);
+            message.error('Error loading data');
+        }
     };
-
-    useEffect(() => {
-        fetchData();
-    }, [JSON.stringify(tableParams), month]);
 
     const handleTableChange = (pagination, filters, sorter) => {
         setTableParams({
@@ -84,14 +86,16 @@ function Transactions({ month, monthText }) {
             filters,
             ...sorter
         });
-
+        
         // `dataSource` is useless since `pageSize` changed
         if (pagination.pageSize !== tableParams.pagination?.pageSize) {
             setData([]);
         }
     };
-
-
+    
+    useEffect(() => {
+        fetchData();
+    }, [JSON.stringify(tableParams), month]);
 
     return (
         <>
