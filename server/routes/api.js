@@ -144,7 +144,7 @@ router.get('/bar-chart', async (req, res) => {
 })
 
 
-// Create an API for pie chart, find unique categories and number of items from that category for the selected month regardless of the year
+// get api for pie chart, find unique categories and number of items from that category for the selected month regardless of the year
 router.get('/pie-chart', async (req, res) => {
     try {
         const month = !isNaN(parseInt(req.query.month)) ? parseInt(req.query.month) : 3;
@@ -173,7 +173,7 @@ router.get('/pie-chart', async (req, res) => {
     }
 })
 
-//Create an API which fetches the data from all the 3 APIs mentioned above, combines the response and sends a final response of the combined JSON
+// get api to fetche the data from all the 3 APIs mentioned above, combines the response and sends a final response of the combined JSON
 router.get('/combined-data', async (req, res) => {
     try {
         const baseURL = req.protocol + '://' + req.get('host');
