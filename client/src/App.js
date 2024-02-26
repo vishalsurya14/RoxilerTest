@@ -2,6 +2,7 @@ import './App.css';
 import React, { useState } from 'react';
 import { Layout, Menu, Select } from 'antd';
 import Transactions from './components/Transactions';
+import Stats from './components/Stats';
 
 const { Header, Content, Footer } = Layout;
 
@@ -200,11 +201,13 @@ const App = () => {
       <Content
         style={{
           padding: "0px 48px",
-          backgroundColor: "white"
+          backgroundColor: "white",
+          minHeight: 600
         }}
       >
 
-        <Transactions month={month} monthText={options[month]} />
+        {/* <Transactions month={month} monthText={options[month]} /> */}
+        <Stats month={month} monthText={options[month]} />
 
 {/* 
         <Search
