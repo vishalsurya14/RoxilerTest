@@ -5,6 +5,7 @@ import Transactions from './components/Transactions';
 import Stats from './components/Stats';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 
+
 const { Header, Content, Footer } = Layout;
 
 
@@ -99,7 +100,7 @@ const App = () => {
             textAlign: "center"
           }}
         >
-          Created by Saurabh Ghiya
+          Created by <strong>Saurabh Ghiya</strong>
         </Footer>
       </Layout>
     </BrowserRouter>

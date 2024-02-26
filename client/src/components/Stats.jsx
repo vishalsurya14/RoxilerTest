@@ -4,15 +4,13 @@ import axios from 'axios'
 import { Bar, Doughnut } from 'react-chartjs-2'
 import { Chart as ChartJS } from "chart.js/auto";
 
-
 export default function Stats({ month, monthText }) {
     let [data, setData] = useState();
     const [loading, setLoading] = useState(false);
-
     const getData = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`http://localhost:8080/combined-data?month=${month}`);
+            const res = await axios.get(`https://roxiler-pvpf.onrender.com/combined-data?month=${month}`);
             setLoading(false);
             setData(res.data);
             message.success('Data loaded successfully');
